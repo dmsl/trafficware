@@ -1,0 +1,151 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>TrafficWare</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/png" href="favicon.png" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Additional Css -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="prune.css">
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <!-- Leaflet and marker cluster: -->
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js" integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA==" crossorigin=""></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js'></script>
+    <link rel="stylesheet" href='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css'>
+    <link rel="stylesheet" href='http://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.Default.css'>
+
+    <!-- Prune cluster (replacing marker cluster): -->
+    <script src="pruneCluster.js"></script>
+
+    <!-- Heatmap: -->
+    <script src="leaflet-heat.js"></script>
+
+    <!-- for tiles: -->
+    <script src="https://unpkg.com/geojson-vt@3.2.0/geojson-vt.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <ul class="nav fixed-bottom nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="#home"><b>Home</b></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#map"><b>Map</b></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#info"><b>Info</b></a>
+        </li>
+    </ul>
+    <!-- /Navigation -->
+
+    <!-- Banner -->
+    <div id="home" class="banner">
+        <div class="banner-text">
+            <h3>- ADE: TrafficWare -</h3>
+            <h1>Maps</h1>
+        </div>
+    </div>
+    <!-- /Banner -->
+
+    <div id="map" class="main">
+        <div class="pos-f-t">
+            <div class="bg-dark p-1">
+
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+
+                    <span class="navButton" onclick="openNav()">&#9776;</span>
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Tile Layer
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" id="default">Default</a>
+                            <a class="dropdown-item" id="classic_tile">Classic</a>
+                            <a class="dropdown-item" id="satellite">Satellite</a>
+                            <a class="dropdown-item" id="dark">Dark</a>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="window.open('http://10.16.20.19:8989/app/')">
+                        Map-Match Server
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+        <div class="container bg-light-grey">
+            <div class="bg-light-grey">
+                <br/>
+                <h2>Point's Function</h2>
+		<div style="padding-right: 10px; padding-left: 10px;">
+                    <h5><label><input type="radio" name="funPoint" value="defaults" id="defaults"> Default</label></h5>
+                    <h5><label><input type="radio" name="funPoint" value="prune" id="prune"> Prune</label></h5>
+                    <h5><label><input type="radio" name="funPoint" value="cluster" id="cluster"> Cluster</label></h5>
+                    <h5><label><input type="radio" name="funPoint" value="heatmap" id="heatmap"> Heatmap</label></h5>
+                    <h5><label><input type="radio" name="funPoint" value="classic" id="classic"> Classic</label></h5>
+                    <h5><label id="clustering" style="visibility: hidden;"><input type="radio" name="funPoint" value="cluster_id" id="cluster_id"> Clustering By Ids</label></h5>
+		</div>
+	        <br/>
+	        <br/>
+                <h2>Data</h2>
+		<div style="padding-right: 10px; padding-left: 10px;">
+                    <h5><label><input type="checkbox" id="opencellid"> OpenCellId Towers</label></h5>
+                    <h5><label><input type="checkbox" id="measurements"> My Measurements</label></h5>
+                    <h5><label><input type="checkbox" id="mls"> MLS Towers</label></h5>
+                    <h5><label><input type="checkbox" id="cyprus_cell"> Cyprus' Cell Towers</label></h5>
+                    <h5><label><input type="checkbox" id="wigle"> Wigle Towers</label></h5>
+                </div<
+                <br/>
+                <div class="text-center">
+                        <button type="button " class="btn btn-primary" id="clear">
+                            Clear Data
+                        </button>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div id="mapid" class="main"></div>
+
+    <div id="info" class="bg-dark" style="height: 100%;">
+        <div class="container padding-top-bottom" style="color: #FFF;">
+            <h5><b>For OpenCellId nodes:</b> Grey for GSM, Red for UMTS, Purple for LTE and Blue for CDMA</h5>
+            <br />
+            <h5><b>For Cell Tower nodes: </b> Grey for 2G, Red for 3G and Purple for LTE/4G</h5>
+            <br />
+            <h5><b>Tiles:</b> OpenStreetMap, MapBox and ThunderForest,</h5>
+            <br />
+            <h5><b>Data:</b> OpenCellId, MLS, Wigle, Open Government Data of Cyprus, ADE Measurements</h5>
+        </div>
+    </div>
+    <script src="map.js"></script>
+    <script src="nav.js"></script>
+</body>
+
+</html>
+
