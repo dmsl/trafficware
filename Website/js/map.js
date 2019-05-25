@@ -594,7 +594,7 @@ function clusterIdPoints(lon, lat, cellid_flag, popup, cell, cellid) {
 
         clustering_points.push({ cellid: cellid, map_point: marker });
         cached_points.push({ on_map: 1, map_point: marker });
-        if (last_lat != 0 && last_lon != 0) {
+        if (last_lat == 0 && last_lon == 0) {
             last_lat = lat;
             last_lon = lon;
         }
